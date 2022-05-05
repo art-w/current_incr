@@ -1,0 +1,29 @@
+(library
+ (name current_incr_ortac))
+
+(rule
+ (target current_incr.ml)
+ (action
+  (copy %{dep:../lib_incr/current_incr.ml} %{target})))
+
+(rule
+ (target modifiable.ml)
+ (action
+  (copy %{dep:../lib_incr/modifiable.ml} %{target})))
+
+(rule
+ (target time_impl.ml)
+ (action
+  (copy %{dep:../lib_incr/time.ml} %{target})))
+
+(rule
+ (target time_impl.mli)
+ (action
+  (copy %{dep:../lib_incr/time.mli} %{target})))
+
+(rule
+ (target time.ml)
+ (action
+  (with-stdout-to
+    %{target}
+   (run ortac %{dep:time_impl.mli}))))

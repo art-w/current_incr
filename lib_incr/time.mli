@@ -4,22 +4,56 @@
 (** {1 Basic ordering operations} *)
 
 (** An element of an ordering. *)
-type t
+type t = {
+  mutable tag: int;
+  mutable prev: t;
+  mutable next: t;
+  counter: int ref;
+}
 
 (** Create a new ordering with a single element. O(1) *)
 val root : unit -> t
+(*@ r = root ()
+    ensures r.tag = 0
+    ensures r.next.tag = r.tag
+    ensures r.prev.tag = r.tag
+    ensures !(r.counter) = 1
+*)
 
 (** [after t] inserts a new element to the ordering, greater than [t] but
     less than all existing elements greater than [t].
 
     O(1) amortized. *)
 val after  : ?on_forget:(unit -> unit) -> t -> t
+(*@ t = after ?on_forget r
+    ensures r.next.tag = t.tag
+    ensures t.prev.tag = r.tag
+    ensures r.tag < t.tag
+
+    (*
+    ensures t.next.tag = (old r).next.tag
+    ensures (old r.next).prev.tag = t.tag
+    *)
+
+*)
 
 (** Check if two elements belong to the same order. O(1) *)
 val same_order : t -> t -> bool
+(*@ ok = same_order a b
+    pure
+
+  *)
+
+val nexts : t -> t list
+(*@ pure *)
 
 (** Compare two elements. O(1) *)
 val compare : t -> t -> int
+(*@ ord = compare a b
+
+    ensures  ord = 0  ->  a.tag = b.tag
+    ensures  ord > 0  ->  List._exists (fun x -> x.tag = a.tag) (nexts b)
+ *)
 
 (** How many elements are ordered. O(1) *)
 val cardinal : t -> int

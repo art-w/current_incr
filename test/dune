@@ -1,4 +1,4 @@
 (tests
  (names test)
- (package current_incr)
- (libraries current_incr alcotest))
+ (package current_incr_gospel)
+ (libraries current_incr_gospel alcotest))
